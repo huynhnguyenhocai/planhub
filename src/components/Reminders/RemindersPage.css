@@ -1,0 +1,139 @@
+.reminders-page {
+  max-width: 900px;
+}
+
+.reminder-section {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: 0;
+}
+
+.section-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.overdue-header {
+  background: var(--accent-red-bg);
+  color: var(--accent-red);
+  border: 1px solid #FECACA;
+  border-bottom: none;
+}
+
+.upcoming-header {
+  background: var(--accent-blue-bg);
+  color: var(--accent-blue);
+  border: 1px solid #BFDBFE;
+  border-bottom: none;
+}
+
+.reminder-list {
+  border: 1px solid var(--border-light);
+  border-radius: 0 0 var(--radius) var(--radius);
+  overflow: hidden;
+}
+
+.reminder-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-light);
+  transition: background var(--transition);
+}
+
+.reminder-card:last-child {
+  border-bottom: none;
+}
+
+.reminder-card:hover {
+  background: var(--bg);
+}
+
+.reminder-card.overdue {
+  border-left: 3px solid var(--accent-red);
+}
+
+.reminder-card.upcoming {
+  border-left: 3px solid var(--accent-blue);
+}
+
+.reminder-color {
+  width: 4px;
+  height: 40px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  display: none;
+}
+
+.reminder-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.reminder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.reminder-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.reminder-days {
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.text-red { color: var(--accent-red); }
+.text-blue { color: var(--accent-blue); }
+
+.reminder-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.reminder-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reminder-date {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.reminder-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .reminder-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .reminder-actions {
+    align-self: flex-end;
+  }
+}
