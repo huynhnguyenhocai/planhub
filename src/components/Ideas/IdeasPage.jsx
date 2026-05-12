@@ -11,17 +11,20 @@ export default function IdeasPage() {
   const [categories] = useState(getCategories());
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTag, setFilterTag] = useState('all');
+  const [filterYear, setFilterYear] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingIdea, setEditingIdea] = useState(null);
 
-  // Collect all unique tags
-  const allTags = useMemo(() => {
-    const tagSet = new Set();
-    ideas.forEach((idea) => {
-      if (idea.tags) idea.tags.forEach((t) => tagSet.add(t));
-    });
-    return [...tagSet].sort();
-  }, [ideas]);
+  const targetCategories = ['Kinh Doanh', 'Tài Chính', 'Cuộc Sống'];
+
+  // Static list of years from 2025 to 2050
+  const availableYears = useMemo(() => {
+    const years = [];
+    for (let i = 2025; i <= 2050; i++) {
+      years.push(i.toString());
+    }
+    return years;
+  }, []);
 
   // Filter ideas
   const filteredIdeas = useMemo(() => {
@@ -29,10 +32,18 @@ export default function IdeasPage() {
       const matchSearch = !searchQuery ||
         idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (idea.note && idea.note.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchTag = filterTag === 'all' || (idea.tags && idea.tags.includes(filterTag));
-      return matchSearch && matchTag;
+      
+      const cat = categories.find(c => c.id === idea.categoryId);
+      const matchTag = filterTag === 'all' || 
+        (idea.tags && idea.tags.includes(filterTag)) || 
+        (cat && cat.name.toLowerCase() === filterTag.toLowerCase());
+
+      const ideaYear = idea.createdAt ? new Date(idea.createdAt).getFullYear().toString() : '';
+      const matchYear = filterYear === 'all' || ideaYear === filterYear;
+
+      return matchSearch && matchTag && matchYear;
     });
-  }, [ideas, searchQuery, filterTag]);
+  }, [ideas, searchQuery, filterTag, filterYear, categories]);
 
   function handleSave(idea) {
     const updated = saveIdea(idea);
@@ -105,22 +116,37 @@ export default function IdeasPage() {
             </button>
           )}
         </div>
-        <div className="tag-filters">
-          <button
-            className={`tag-filter-btn ${filterTag === 'all' ? 'active' : ''}`}
-            onClick={() => setFilterTag('all')}
+        
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <select 
+            className="filter-select" 
+            value={filterYear} 
+            onChange={(e) => setFilterYear(e.target.value)}
+            style={{ minWidth: '120px', padding: '8px 12px', borderRadius: '20px', border: '1px solid #eee', outline: 'none' }}
           >
-            Tất cả
-          </button>
-          {allTags.map((tag) => (
+            <option value="all">Tất cả năm</option>
+            {availableYears.map(year => (
+              <option key={year} value={year}>Năm {year}</option>
+            ))}
+          </select>
+
+          <div className="tag-filters">
             <button
-              key={tag}
-              className={`tag-filter-btn ${filterTag === tag ? 'active' : ''}`}
-              onClick={() => setFilterTag(tag)}
+              className={`tag-filter-btn ${filterTag === 'all' ? 'active' : ''}`}
+              onClick={() => setFilterTag('all')}
             >
-              {tag}
+              Tất cả
             </button>
-          ))}
+            {targetCategories.map((tag) => (
+              <button
+                key={tag}
+                className={`tag-filter-btn ${filterTag === tag ? 'active' : ''}`}
+                onClick={() => setFilterTag(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

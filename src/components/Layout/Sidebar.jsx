@@ -38,15 +38,15 @@ export default function Sidebar() {
     <aside className="sidebar" id="sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-icon">
-          <span>P</span>
+        <div className="logo-icon-custom">
+          <Calendar size={24} color="#8B5CF6" />
         </div>
-        <span className="logo-text">PlanHub</span>
+        <span className="logo-text" style={{ color: '#8B5CF6' }}>Sếp Của Huỳnh Nguyễn</span>
       </div>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
-        <div className="nav-label">MENU</div>
+        <div className="nav-label">CHÍNH</div>
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
@@ -56,6 +56,8 @@ export default function Sidebar() {
           >
             <item.icon size={20} />
             <span className="nav-text">{item.label}</span>
+            {item.label === 'Ý tưởng nhanh' && <span className="nav-badge" style={{ backgroundColor: '#8B5CF6' }}>20</span>}
+            {item.label === 'Nhắc nhở' && <span className="nav-badge" style={{ backgroundColor: '#EF4444' }}>2</span>}
           </NavLink>
         ))}
       </nav>
@@ -66,8 +68,8 @@ export default function Sidebar() {
         <div className="category-list">
           {categories.map((cat) => (
             <div key={cat.id} className="category-item">
-              <span className="category-dot" style={{ background: cat.color }} />
-              <span className="category-name">{cat.name}</span>
+              <span className="category-square" style={{ background: cat.color }} />
+              <span className="category-name">{cat.name.toUpperCase()}</span>
               <button
                 className="category-delete"
                 onClick={() => handleDeleteCategory(cat.id)}

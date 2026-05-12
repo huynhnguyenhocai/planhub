@@ -72,97 +72,87 @@ export default function CalendarPage() {
     <div className="calendar-page animate-fade-in">
       {/* Header */}
       <div className="page-header">
-        <div>
-          <h1 className="page-title">📅 Lịch công việc</h1>
-          <p className="page-subtitle">{formatWeekRange(weekDates)}</p>
-        </div>
         <div className="calendar-controls">
           <div className="week-nav">
             <button className="btn btn-ghost btn-icon" onClick={() => navigateWeek(-1)} title="Tuần trước">
               <ChevronLeft size={20} />
             </button>
             <button className="btn btn-secondary btn-sm" onClick={goToday}>
-              <CalendarDays size={16} />
               Hôm nay
             </button>
             <button className="btn btn-ghost btn-icon" onClick={() => navigateWeek(1)} title="Tuần sau">
               <ChevronRight size={20} />
             </button>
           </div>
-          <div className="filter-group">
-            <Filter size={16} className="filter-icon" />
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">Tất cả hạng mục</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-            <select
-              value={filterColor}
-              onChange={(e) => setFilterColor(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">Tất cả màu</option>
-              {TASK_COLORS.map((c) => (
-                <option key={c} value={c} style={{ color: c }}>● {c}</option>
-              ))}
-            </select>
-          </div>
+          <div className="week-range-text">{formatWeekRange(weekDates)}</div>
+        </div>
+        <div className="filter-group">
+          <select
+            value={filterColor}
+            onChange={(e) => setFilterColor(e.target.value)}
+            className="filter-select"
+          >
+            <option value="all">Tất cả màu</option>
+            {TASK_COLORS.map((c) => (
+              <option key={c} value={c} style={{ color: c }}>● {c}</option>
+            ))}
+          </select>
         </div>
       </div>
 
       {/* Week Grid */}
-      <div className="week-grid">
-        {weekDates.map((date, dayIdx) => (
-          <div key={dayIdx} className={`day-column ${isToday(date) ? 'today' : ''}`}>
-            <div className="day-header">
-              <span className="day-name">{DAY_NAMES[dayIdx]}</span>
-              <span className={`day-number ${isToday(date) ? 'today-number' : ''}`}>
-                {date.getDate()}
-              </span>
+      <div className="calendar-table">
+        {/* Header Row */}
+        <div className="calendar-row header-row">
+          <div className="calendar-cell time-label-cell"></div>
+          {weekDates.map((date, dayIdx) => (
+            <div key={dayIdx} className={`calendar-cell day-header-cell ${isToday(date) ? 'today' : ''}`}>
+              <div className="day-name">{DAY_NAMES[dayIdx]}</div>
+              <div className="day-number">{date.getDate()}</div>
             </div>
-            <div className="day-slots">
-              {TIME_SLOTS.map((slot) => {
-                const slotTasks = getTasksForSlot(date, slot.id);
-                return (
-                  <div key={slot.id} className="time-slot">
-                    <div className="slot-label">
-                      <span>{slot.icon} {slot.label}</span>
-                    </div>
-                    <div className="slot-tasks">
-                      {slotTasks.map((task) => {
-                        const cat = categories.find((c) => c.id === task.categoryId);
-                        return (
-                          <div
-                            key={task.id}
-                            className={`task-card task-status-${task.status}`}
-                            onClick={() => handleEditClick(task)}
-                          >
-                            <div className="task-color-bar" style={{ background: task.color }} />
-                            <div className="task-card-body">
-                              <div className="task-title">{task.title}</div>
-                              {cat && (
-                                <span className="task-category-dot" style={{ background: cat.color }} title={cat.name} />
-                              )}
-                              <div className="task-progress-mini">
-                                <div className="task-progress-fill" style={{ width: `${task.progress}%`, background: task.color }} />
-                              </div>
+          ))}
+        </div>
+
+        {/* Time Slot Rows */}
+        {TIME_SLOTS.map((slot) => (
+          <div key={slot.id} className="calendar-row">
+            <div className="calendar-cell time-label-cell">
+              <div className="time-icon">{slot.icon}</div>
+              <div className="time-text">{slot.label}</div>
+            </div>
+            {weekDates.map((date, dayIdx) => {
+              const slotTasks = getTasksForSlot(date, slot.id);
+              return (
+                <div key={`${dayIdx}-${slot.id}`} className="calendar-cell task-cell">
+                  <div className="slot-tasks">
+                    {slotTasks.map((task) => {
+                      const cat = categories.find((c) => c.id === task.categoryId);
+                      return (
+                        <div
+                          key={task.id}
+                          className={`task-card task-status-${task.status}`}
+                          onClick={() => handleEditClick(task)}
+                        >
+                          <div className="task-color-bar" style={{ background: task.color }} />
+                          <div className="task-card-body">
+                            <div className="task-title">{task.title}</div>
+                            {cat && (
+                              <span className="task-category-dot" style={{ background: cat.color }} title={cat.name} />
+                            )}
+                            <div className="task-progress-mini">
+                              <div className="task-progress-fill" style={{ width: `${task.progress}%`, background: task.color }} />
                             </div>
                           </div>
-                        );
-                      })}
-                    </div>
-                    <button className="add-task-btn" onClick={() => handleAddClick(date, slot.id)}>
-                      + Thêm
-                    </button>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                  <button className="add-task-btn" onClick={() => handleAddClick(date, slot.id)}>
+                    + Thêm
+                  </button>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
